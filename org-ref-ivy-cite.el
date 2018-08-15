@@ -96,7 +96,7 @@ ENTRY is selected from `orhc-bibtex-candidates'."
        (org-ref-insert-key-at-point (list (cdr (assoc "=key=" entry))))))))
 
 
-(defun or-ivy-bibtex-open-pdf (entry)
+(defun or--ivy-bibtex-open-pdf (entry opener)
   "Open the pdf associated with ENTRY.
 ENTRY is selected from `orhc-bibtex-candidates'."
   (with-ivy-window
@@ -105,8 +105,20 @@ ENTRY is selected from `orhc-bibtex-candidates'."
 			(cdr (assoc "=key=" entry)))
 		org-ref-pdf-directory)))
       (if (file-exists-p pdf)
-	  (org-open-file pdf)
+	  (funcall opener pdf)
 	(message "No pdf found for %s" (cdr (assoc "=key=" entry)))))))
+
+
+(defun or-ivy-bibtex-open-pdf (entry)
+  "Open the pdf associated with ENTRY.
+ENTRY is selected from `orhc-bibtex-candidates'."
+  (or--ivy-bibtex-open-pdf entry #'org-open-file))
+
+
+(defun or-ivy-bibtex-open-pdf-externally (entry)
+  "Open the pdf associated with ENTRY with the system's pdf viewer.
+ENTRY is selected from `orhc-bibtex-candidates'."
+  (or--ivy-bibtex-open-pdf entry #'org-open-file-with-system))
 
 
 (defun or-ivy-bibtex-open-notes (entry)
@@ -235,6 +247,7 @@ to add a new bibtex entry. The arg is selected from
   '(("b" or-ivy-bibtex-open-entry "Open bibtex entry")
     ("B" or-ivy-bibtex-copy-entry "Copy bibtex entry")
     ("p" or-ivy-bibtex-open-pdf "Open pdf")
+    ("x" or-ivy-bibtex-open-pdf-externally "Open pdf externally")
     ("n" or-ivy-bibtex-open-notes "Open notes")
     ("u" or-ivy-bibtex-open-url "Open url")
     ("d" or-ivy-bibtex-open-doi "Open doi")
@@ -442,13 +455,14 @@ Use a prefix arg to select the ref type."
 
 (defhydra org-ref-cite-hydra (:color blue)
   "
-_p_: Open pdf     _w_: WOS          _g_: Google Scholar _K_: Copy citation to clipboard
-_u_: Open url     _r_: WOS related  _P_: Pubmed         _k_: Copy key to clipboard
-_n_: Open notes   _c_: WOS citing   _C_: Crossref       _f_: Copy formatted entry
-_o_: Open entry   _e_: Email entry  ^ ^                 _q_: quit
+_p_: Open pdf     _w_: WOS          _g_: Google Scholar       _K_: Copy citation to clipboard
+_u_: Open url     _r_: WOS related  _P_: Pubmed               _k_: Copy key to clipboard
+_n_: Open notes   _c_: WOS citing   _C_: Crossref             _f_: Copy formatted entry
+_o_: Open entry   _e_: Email entry  _x_: Open pdf externally  _q_: quit
 "
   ("o" org-ref-open-citation-at-point nil)
   ("p" org-ref-open-pdf-at-point nil)
+  ("x" org-ref-open-pdf-at-point-externally nil)
   ("n" org-ref-open-notes-at-point nil)
   ("u" org-ref-open-url-at-point nil)
   ("w" org-ref-wos-at-point nil)

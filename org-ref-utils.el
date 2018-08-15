@@ -406,16 +406,28 @@ Jabref, Mendeley and Zotero. See `bibtex-completion-find-pdf'."
     (or (car (bibtex-completion-find-pdf key)) "")))
 
 
-;;;###autoload
-(defun org-ref-open-pdf-at-point ()
-  "Open the pdf for bibtex key under point if it exists."
-  (interactive)
+(defun org-ref--open-pdf-at-point (opener)
+  "Open the pdf for bibtex key under point if it exists.
+Use function OPENER to do the opening."
   (let* ((results (org-ref-get-bibtex-key-and-file))
          (key (car results))
          (pdf-file (funcall org-ref-get-pdf-filename-function key)))
     (if (file-exists-p pdf-file)
-        (org-open-file pdf-file)
+        (funcall opener pdf-file)
       (message "no pdf found for %s" key))))
+
+
+;;;###autoload
+(defun org-ref-open-pdf-at-point ()
+  "Open the pdf for bibtex key under point if it exists."
+  (interactive)
+  (org-ref--open-pdf-at-point #'org-open-file))
+
+;;;###autoload
+(defun org-ref-open-pdf-at-point-externally ()
+  "Open the pdf for bibtex key under point externally if it exists."
+  (interactive)
+  (org-ref--open-pdf-at-point #'org-open-file-with-system))
 
 
 ;;;###autoload
