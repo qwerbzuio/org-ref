@@ -190,7 +190,8 @@ Entry gets added after the last #+latex_header line."
 
 
 (defvar org-ref-glossary-gls-commands
-  '("gls" "glspl" "Gls" "Glspl" "glssymbol" "glsdesc"))
+  '("gls" "glspl" "Gls" "Glspl" "glssymbol" "glsdesc")
+  "List of possible glossary commands.")
 
 
 (dolist (command org-ref-glossary-gls-commands)
@@ -252,11 +253,7 @@ Used in fontification."
 Adds a tooltip to the link that is found."
     (when (and (re-search-forward
 		(concat
-		 (regexp-opt '("gls" "glspl"
-			       "Gls" "Glspl"
-			       "glslink"
-			       "glssymbol"
-			       "glsdesc"))
+		 (regexp-opt (append org-ref-glossary-gls-commands "glslink"))
 		 ":[a-zA-Z]\\{2,\\}")
 		limit t)
 	       (not (org-in-src-block-p))
@@ -459,12 +456,7 @@ WINDOW and OBJECT are ignored."
 			 (insert (format
 				  "[[%s:%s][%s]]"
 				  (completing-read "Type: "
-						   '("gls"
-						     "glspl"
-						     "Gls"
-						     "Glspl"
-						     "glssymbol"
-						     "glsdesc")
+						   org-ref-glossary-gls-commands
 						   nil t
 						   "gls")
 				  (nth 0 candidate)
