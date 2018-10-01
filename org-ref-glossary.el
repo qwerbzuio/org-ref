@@ -471,7 +471,9 @@ WINDOW and OBJECT are ignored."
 						   nil t
 						   "gls")
 				  (nth 0 candidate)
-				  (nth 1 candidate)))))
+				  (replace-regexp-in-string ;; remove ensuremath in link-label
+                   "\\\\ensuremath{\\(.*\\)}" "\\1"
+                   (nth 1 candidate))))))
 	    ,(helm-build-sync-source "Insert acronym term"
 	       :candidates acronym-candidates
 	       :action (lambda (candidate)
