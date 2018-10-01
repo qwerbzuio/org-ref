@@ -183,10 +183,17 @@ Entry gets added after the last #+latex_header line."
 ;;** Glossary links
 (defun or-follow-glossary (entry)
   "Goto beginning of the glossary ENTRY."
-  (org-mark-ring-push)
-  (goto-char (point-min))
-  (re-search-forward (format "\\newglossaryentry{%s}" entry))
-  (goto-char (match-beginning 0)))
+  (let ((match-position)
+        (narrow-begin (point-min)))
+    (save-restriction
+      (widen)
+      (org-mark-ring-push)
+      (goto-char (point-min))
+      (re-search-forward (format "\\newglossaryentry{%s}" entry))
+      (setq match-position (match-beginning 0)))
+    (when (< match-position narrow-begin)
+      (widen))
+    (goto-char match-position)))
 
 
 (defvar org-ref-glossary-gls-commands
@@ -411,43 +418,47 @@ WINDOW and OBJECT are ignored."
 	key
 	entry)
     (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward
-	      "\\\\newglossaryentry{\\([[:ascii:]]+?\\)}" nil t)
-	(setq key (match-string 1)
-	      entry (or-parse-glossary-entry key))
-	(setq glossary-candidates
-	      (append
-	       glossary-candidates
-	       (list
-		(cons
-		 ;; for helm
-		 (format "%s: %s."
-			 (plist-get entry :name)
-			 (plist-get entry :description))
-		 ;; the returned candidate
-		 (list key
-		       (plist-get entry :name))))))))
+      (save-restriction
+        (widen)
+        (goto-char (point-min))
+        (while (re-search-forward
+	            "\\\\newglossaryentry{\\([[:ascii:]]+?\\)}" nil t)
+	      (setq key (match-string 1)
+	            entry (or-parse-glossary-entry key))
+	      (setq glossary-candidates
+	            (append
+	             glossary-candidates
+	             (list
+		          (cons
+		           ;; for helm
+		           (format "%s: %s."
+			               (plist-get entry :name)
+			               (plist-get entry :description))
+		           ;; the returned candidate
+		           (list key
+		                 (plist-get entry :name)))))))))
 
     ;; acronym candidates
     (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward
-	      "\\\\newacronym{\\([[:ascii:]]+?\\)}" nil t)
-	(setq key (match-string 1)
-	      entry (or-parse-acronym-entry key))
-	(setq acronym-candidates
-	      (append
-	       acronym-candidates
-	       (list
-		(cons
-		 ;; for helm
-		 (format "%s (%s)."
-			 (plist-get entry :full)
-			 (plist-get entry :abbrv))
-		 ;; the returned candidate
-		 (list key
-		       (plist-get entry :abbrv))))))))
+      (save-restriction
+        (widen)
+        (goto-char (point-min))
+        (while (re-search-forward
+	            "\\\\newacronym{\\([[:ascii:]]+?\\)}" nil t)
+	      (setq key (match-string 1)
+	            entry (or-parse-acronym-entry key))
+	      (setq acronym-candidates
+	            (append
+	             acronym-candidates
+	             (list
+		          (cons
+		           ;; for helm
+		           (format "%s (%s)."
+			               (plist-get entry :full)
+			               (plist-get entry :abbrv))
+		           ;; the returned candidate
+		           (list key
+		                 (plist-get entry :abbrv)))))))))
 
     (helm :sources
 	  `(,(helm-build-sync-source "Insert glossary term"
