@@ -326,6 +326,7 @@ FULL is the expanded acronym."
 ;;** Acronym links
 (defun or-follow-acronym (label)
   "Go to the definition of the acronym LABEL."
+  (widen)
   (org-mark-ring-push)
   (goto-char (point-min))
   (re-search-forward (format "\\\\newacronym{%s}" label))
