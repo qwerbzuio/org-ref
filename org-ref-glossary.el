@@ -411,6 +411,13 @@ WINDOW and OBJECT are ignored."
 	    (goto-char limit)
 	    nil))))))
 
+(defun org-ref-transform-label-for-display (orig-label-text)
+  "Return transformed label text as it should be displayed in the org-buffer.
+Currently, this simply removes an enclosing \\ensuremath."
+  (replace-regexp-in-string ;; remove ensuremath in link-label
+   "\\\\ensuremath{\\(.*\\)}" "\\1"
+   orig-label-text))
+
 
 ;; * Helm command to insert entries
 ;;;###autoload
@@ -476,9 +483,7 @@ WINDOW and OBJECT are ignored."
 						   nil t
 						   "gls")
 				  (nth 0 candidate)
-				  (replace-regexp-in-string ;; remove ensuremath in link-label
-                   "\\\\ensuremath{\\(.*\\)}" "\\1"
-                   (nth 1 candidate))))))
+                  (org-ref-transform-label-for-display (nth 1 candidate))))))
 	    ,(helm-build-sync-source "Insert acronym term"
 	       :candidates acronym-candidates
 	       :action (lambda (candidate)
@@ -495,7 +500,7 @@ WINDOW and OBJECT are ignored."
 						   nil t
 						   "ac")
 				  (nth 0 candidate)
-				  (nth 1 candidate)))))
+                  (org-ref-transform-label-for-display (nth 1 candidate))))))
 	    ,(helm-build-sync-source "Add new term"
 	       :candidates '(("Add glossary term" . org-ref-add-glossary-entry)
 			     ("Add acronym term" . org-ref-add-acronym-entry))
