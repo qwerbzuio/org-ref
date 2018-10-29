@@ -170,15 +170,17 @@ DESCRIPTION is the definition of the entry.
 Entry gets added after the last #+latex_header line."
   (interactive "sLabel: \nsName: \nsDescription: ")
   (save-excursion
-    (re-search-backward "^\\([ \t]*\\)#\\+latex_header" nil t)
-    (let ((indentation-prefix (match-string 1)))
-      (forward-line)
-      (when (not (looking-at "^$"))
-        (beginning-of-line)
-        (insert "\n")
-        (forward-line -1))
-      (insert (format "%s#+latex_header_extra: \\newglossaryentry{%s}{name={%s},description={%s}}\n"
-		              indentation-prefix label name description)))))
+    (save-restriction
+      (widen)
+      (re-search-backward "^\\([ \t]*\\)#\\+latex_header" nil t)
+      (let ((indentation-prefix (match-string 1)))
+        (forward-line)
+        (when (not (looking-at "^$"))
+          (beginning-of-line)
+          (insert "\n")
+          (forward-line -1))
+        (insert (format "%s#+latex_header_extra: \\newglossaryentry{%s}{name={%s},description={%s}}\n"
+		                indentation-prefix label name description))))))
 
 ;;** Glossary links
 (defun or-follow-glossary (entry)
@@ -291,15 +293,17 @@ ABBRV is the abbreviated form.
 FULL is the expanded acronym."
   (interactive "sLabel: \nsAcronym: \nsFull name: ")
   (save-excursion
-    (re-search-backward "#\\+latex_header" nil t)
-    (forward-line)
-    (when (not (looking-at "^$"))
-      (beginning-of-line)
-      (insert "\n")
-      (forward-line -1))
+    (save-restriction
+      (widen)
+      (re-search-backward "#\\+latex_header" nil t)
+      (forward-line)
+      (when (not (looking-at "^$"))
+        (beginning-of-line)
+        (insert "\n")
+        (forward-line -1))
 
-    (insert (format "#+latex_header_extra: \\newacronym{%s}{%s}{%s}\n"
-		    label abbrv full))))
+      (insert (format "#+latex_header_extra: \\newacronym{%s}{%s}{%s}\n"
+		              label abbrv full)))))
 
 
 (defun or-parse-acronym-entry (label)
