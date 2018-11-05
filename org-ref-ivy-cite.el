@@ -115,10 +115,12 @@ ENTRY is selected from `orhc-bibtex-candidates'."
   (or--ivy-bibtex-open-pdf entry #'org-open-file))
 
 
-(defun or-ivy-bibtex-open-pdf-externally (entry)
+(defun or-ivy-bibtex-open-pdf-dired (entry)
   "Open the pdf associated with ENTRY with the system's pdf viewer.
 ENTRY is selected from `orhc-bibtex-candidates'."
-  (or--ivy-bibtex-open-pdf entry #'org-open-file-with-system))
+  (or--ivy-bibtex-open-pdf entry (lambda (pdf-file)
+     (dired (file-name-directory pdf-file))
+     (dired-goto-file pdf-file))))
 
 
 (defun or-ivy-bibtex-open-notes (entry)
@@ -247,7 +249,7 @@ to add a new bibtex entry. The arg is selected from
   '(("b" or-ivy-bibtex-open-entry "Open bibtex entry")
     ("B" or-ivy-bibtex-copy-entry "Copy bibtex entry")
     ("p" or-ivy-bibtex-open-pdf "Open pdf")
-    ("x" or-ivy-bibtex-open-pdf-externally "Open pdf externally")
+    ("D" or-ivy-bibtex-open-pdf-dired "Open pdf in dired")
     ("n" or-ivy-bibtex-open-notes "Open notes")
     ("u" or-ivy-bibtex-open-url "Open url")
     ("d" or-ivy-bibtex-open-doi "Open doi")
@@ -458,11 +460,11 @@ Use a prefix arg to select the ref type."
 _p_: Open pdf     _w_: WOS          _g_: Google Scholar       _K_: Copy citation to clipboard
 _u_: Open url     _r_: WOS related  _P_: Pubmed               _k_: Copy key to clipboard
 _n_: Open notes   _c_: WOS citing   _C_: Crossref             _f_: Copy formatted entry
-_o_: Open entry   _e_: Email entry  _x_: Open pdf externally  _q_: quit
+_o_: Open entry   _e_: Email entry  _D_: Open pdf in dired    _q_: quit
 "
   ("o" org-ref-open-citation-at-point nil)
   ("p" org-ref-open-pdf-at-point nil)
-  ("x" org-ref-open-pdf-at-point-externally nil)
+  ("D" org-ref-open-pdf-at-point-dired nil)
   ("n" org-ref-open-notes-at-point nil)
   ("u" org-ref-open-url-at-point nil)
   ("w" org-ref-wos-at-point nil)

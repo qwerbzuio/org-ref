@@ -424,10 +424,13 @@ Use function OPENER to do the opening."
   (org-ref--open-pdf-at-point #'org-open-file))
 
 ;;;###autoload
-(defun org-ref-open-pdf-at-point-externally ()
-  "Open the pdf for bibtex key under point externally if it exists."
+(defun org-ref-open-pdf-at-point-dired ()
+  "Open the pdf for bibtex key under point in dired if it exists."
   (interactive)
-  (org-ref--open-pdf-at-point #'org-open-file-with-system))
+  (org-ref--open-pdf-at-point
+   (lambda (pdf-file)
+     (dired (file-name-directory pdf-file))
+     (dired-goto-file pdf-file))))
 
 
 ;;;###autoload
