@@ -83,6 +83,7 @@
 If `org-ref-ivy-cite-marked-candidates' is non-nil then they are added instead of ENTRY.
 ENTRY is selected from `orhc-bibtex-candidates'."
   (with-ivy-window
+   (insert (if (and (not (looking-back "^")) (looking-back "[^ (]" 1)) " " ""))
    (if org-ref-ivy-cite-marked-candidates
        (cl-loop for entry in org-ref-ivy-cite-marked-candidates
 	        do
@@ -444,7 +445,7 @@ Use a prefix arg to select the ref type."
   (interactive)
   (let ((label (ivy-read "label: " (org-ref-get-labels) :require-match t)))
     (insert
-     (or (when (looking-at "$") " ") "")
+     (if (and (not (looking-back "^")) (looking-back "[^ (]" 1)) " " "")
      (concat (if ivy-current-prefix-arg
 		 (ivy-read "type: " org-ref-ref-types)
 	       org-ref-default-ref-type)
