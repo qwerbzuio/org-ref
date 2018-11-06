@@ -435,8 +435,8 @@ prefix ARG is used, which uses `org-ref-default-bibliography'."
   "Insert a label with ivy."
   (interactive)
   (insert
-   (concat "label:"
-	   (ivy-read "label: " (org-ref-get-labels)))))
+   (format (if (org-inside-LaTeX-fragment-p) "\\label{%s}" "label:%s")
+           (ivy-read "label: " (org-ref-get-labels)))))
 
 
 (defun org-ref-ivy-insert-ref-link ()
