@@ -150,9 +150,9 @@ but there could be other :key value pairs."
 	    ;; value is up to the next comma
 	    (re-search-forward "," end-of-entry 'mv)
 	    (setq value (buffer-substring p1 (- (point) 1))))
-	  ;; remove #+latex_header_extra:
+	  ;; remove #+latex_header: / #+latex_header_extra:
 	  (setq value (replace-regexp-in-string
-		       "#\\+latex_header_extra: " "" value))
+		       "#\\+latex_header\\(_extra\\)?: " "" value))
 	  (setq value (replace-regexp-in-string
 		       "\n +" " " value))
 	  (setq data (append data
