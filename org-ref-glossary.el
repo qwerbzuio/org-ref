@@ -95,6 +95,15 @@
   :group 'org-ref)
 
 
+(defcustom org-ref-glossary-header-type "latex_header_extra"
+  "Which type of header argument to use for definition of entries.
+- latex_header_extra will not be used in latex-snippets
+- latex_header will be available everywhere"
+  :type '(choice (const "latex_header")
+                 (const "latex_header_extra"))
+  :group 'org-ref-glossary)
+
+
 (defun or-find-closing-curly-bracket (&optional limit)
   "Find closing bracket for the bracket at point and move point to it.
 Go up to LIMIT or `point-max'. This is a parsing function. I
@@ -179,8 +188,8 @@ Entry gets added after the last #+latex_header line."
           (beginning-of-line)
           (insert "\n")
           (forward-line -1))
-        (insert (format "%s#+latex_header_extra: \\newglossaryentry{%s}{name={%s},description={%s}}\n"
-		                indentation-prefix label name description))))))
+        (insert (format "%s#+%s: \\newglossaryentry{%s}{name={%s},description={%s}}\n"
+		                indentation-prefix org-ref-glossary-header-type label name description))))))
 
 ;;** Glossary links
 (defun or-follow-glossary (entry)
@@ -302,8 +311,8 @@ FULL is the expanded acronym."
         (insert "\n")
         (forward-line -1))
 
-      (insert (format "#+latex_header_extra: \\newacronym{%s}{%s}{%s}\n"
-		              label abbrv full)))))
+      (insert (format "#+%s: \\newacronym{%s}{%s}{%s}\n"
+		              org-ref-glossary-header-type label abbrv full)))))
 
 
 (defun or-parse-acronym-entry (label)
