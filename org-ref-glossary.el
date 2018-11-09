@@ -74,7 +74,7 @@
 (require 'org-ref-utils)
 
 (declare-function helm "helm")
-(declare-function helm-build-sync-source "helm-source")
+(require 'helm-source)
 
 ;;; Code:
 (defgroup org-ref-glossary nil
