@@ -62,6 +62,7 @@
 
 (require 'org-ref-citeproc)
 (require 'doi-utils)
+(require 'org-ref-utils)
 
 (defvar org-ref-pdf-directory)
 (defvar org-ref-notes-directory)
@@ -792,13 +793,14 @@ _e_: Email entry  _K_: Edit keywords          _L_: clean entry          _P_: Pub
 _U_: Update entry _N_: New entry              _R_: Crossref             _g_: Google Scholar
 _s_: Sort entry   _a_: Remove nonascii        _h_: helm-bibtex          _q_: quit
 _u_: Update field _F_: file funcs             _A_: Assoc pdf with entry
-_n_: Open notes                               _T_: Title case
+_n_: Open notes   _D_: Open pdf in dired      _T_: Title case
                                               _S_: Sentence case
 "
   ("p" org-ref-open-bibtex-pdf)
   ("P" org-ref-bibtex-pubmed)
   ("w" org-ref-bibtex-wos)
   ("c" org-ref-bibtex-wos-citing)
+  ("D" org-ref-open-pdf-at-point-dired nil)
   ("a" org-ref-bibtex-wos-related)
   ("R" org-ref-bibtex-crossref)
   ("g" org-ref-bibtex-google-scholar)
