@@ -323,7 +323,7 @@ FULL is the expanded acronym."
     (let (abbrv full p1)
       (goto-char (point-min))
       (when
-	  (re-search-forward (format "\\newacronym{%s}" label) nil t)
+	  (re-search-forward (format "\\newacronym\\(?:\\[.*\\]\\)*{%s}" label) nil t)
 	(setq p1 (+ 1 (point)))
 	(forward-list)
 	(setq abbrv (buffer-substring p1 (- (point) 1)))
@@ -338,7 +338,7 @@ FULL is the expanded acronym."
   (widen)
   (org-mark-ring-push)
   (goto-char (point-min))
-  (re-search-forward (format "\\\\newacronym{%s}" label))
+  (re-search-forward (format "\\\\newacronym\\(?:\\[.*\\]\\)*{%s}" label))
   (goto-char (match-beginning 0)))
 
 
@@ -465,7 +465,7 @@ Currently, this simply removes an enclosing \\ensuremath."
         (widen)
         (goto-char (point-min))
         (while (re-search-forward
-	            "\\\\newacronym{\\([[:ascii:]]+?\\)}" nil t)
+	            "\\\\newacronym\\(?:\\[.*\\]\\)*{\\([[:ascii:]]+?\\)}" nil t)
 	      (setq key (match-string 1)
 	            entry (or-parse-acronym-entry key))
 	      (setq acronym-candidates
