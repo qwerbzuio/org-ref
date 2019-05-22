@@ -446,11 +446,11 @@ Use a prefix arg to select the ref type."
   (let ((label (ivy-read "label: " (org-ref-get-labels) :require-match t)))
     (insert
      (if (and (not (looking-back "^")) (looking-back "[^ (]" 1)) " " "")
-     (concat (if ivy-current-prefix-arg
-		 (ivy-read "type: " org-ref-ref-types)
-	       org-ref-default-ref-type)
-	     ":"
-	     label))))
+     (format (if (org-inside-LaTeX-fragment-p) "\\%s{%s}" "%s:%s")
+             (if ivy-current-prefix-arg
+		         (ivy-read "type: " org-ref-ref-types)
+	           org-ref-default-ref-type)
+	         label))))
 
 
 (require 'hydra)
